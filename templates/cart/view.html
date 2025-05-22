@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Корзина</h2>
+<table class="table">
+  {% for item in cart_items %}
+  <tr>
+    <td>{{ item.product.name }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>${{ item.total }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
