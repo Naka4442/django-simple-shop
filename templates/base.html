@@ -34,7 +34,7 @@
         
         <div class="d-flex">
           <!-- Корзина -->
-          
+          <a href="{% url 'cart_view' %}" class="btn btn-outline-light me-2">
             Корзина 
             {% if cart_items_count %}
               <span class="badge bg-danger">{{ cart_items_count }}</span>
