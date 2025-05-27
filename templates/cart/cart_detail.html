@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Ваша корзина</h2>
+  
+  {% if cart.items.exists %}
+  <div class="table-responsive">
+    <table class="table">
+      <thead class="table-light">
+        <tr>
+          <th>Товар</th>
+          <th>Цена</th>
+          <th>Количество</th>
+          <th>Итого</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart.items.all %}
+        <tr>
+          <td>
+            <div class="d-flex align-items-center">
+              <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                   class="img-thumbnail" style="width: 80px; height: auto;">
+              <div class="ms-3">
+                <h5>{{ item.product.name }}</h5>
+              </div>
+            </div>
+          </td>
+          <td>{{ item.product.price }} ₽</td>
+          <td>
+            <div class="d-flex align-items-center">
+              <form method="post" action="{% url 'cart:update_cart_item' item.id %}" class="me-2">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" 
+                       class="form-control" style="width: 70px;">
+              </form>
+            </div>
+          </td>
+          <td>{{ item.total_price }} ₽</td>
+          <td>
+            <a href="{% url 'cart:remove_from_cart' item.id %}" class="btn btn-danger btn-sm">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-end"><strong>Общая сумма:</strong></td>
+          <td colspan="2"><strong>{{ cart.total_price }} ₽</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+    
+    <div class="d-flex justify-content-between mt-4">
+      <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Продолжить покупки
+      </a>
+      <a href="{% url 'cart:checkout' %}" class="btn btn-primary">
+        Оформить заказ <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert-info">
+    Ваша корзина пуста. <a href="{% url 'product_list' %}">Начать покупки</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
