@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Cart, CartItem
 from products.models import Product
 from django.views.decorators.http import require_POST
-from orders.models import Order, OrderItem  # не забудь импортировать
-from orders.forms import CheckoutForm  # твоя форма
+from orders.models import Order, OrderItem 
+from orders.forms import CheckoutForm
+from users.models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
