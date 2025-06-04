@@ -7,6 +7,7 @@ from orders.forms import CheckoutForm  # твоя форма
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+@login_required
 def cart_detail(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     return render(request, 'cart/cart_detail.html', {'cart': cart})
@@ -65,7 +66,17 @@ def checkout(request):
             messages.success(request, f"Ваш заказ #{order.id} успешно оформлен!")
             return redirect('orders:order_detail', order_id=order.id)
     else:
-        form = CheckoutForm()
+        initial = {}
+        if request.user.is_authenticated:
+            try:
+                profile = request.user.profile
+                initial = {
+                    'phone': profile.phone,
+                    'address': profile.address
+                }
+            except Profile.DoesNotExist:
+                pass
+        form = CheckoutForm(initial=initial)
 
     return render(request, 'orders/checkout.html', {
         'cart': cart,
