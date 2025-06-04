@@ -2,7 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Cart, CartItem
 from products.models import Product
 from django.views.decorators.http import require_POST
+from orders.models import Order, OrderItem 
+from orders.forms import CheckoutForm
+from users.models import Profile
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 @login_required
 def cart_detail(request):
@@ -35,9 +39,50 @@ def remove_from_cart(request, item_id):
 @login_required
 def checkout(request):
     cart = get_object_or_404(Cart, user=request.user)
+
     if not cart.items.exists():
+        messages.warning(request, "Ваша корзина пуста")
         return redirect('cart:cart_detail')
-    return render(request, 'cart/checkout.html', {'cart': cart})
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.total = cart.total_price()
+            order.save()
+
+            # Создаем OrderItem из CartItem
+            for item in cart.items.all():
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    quantity=item.quantity,
+                    price=item.product.price
+                )
+
+            # Очищаем корзину
+            cart.items.all().delete()
+
+            messages.success(request, f"Ваш заказ #{order.id} успешно оформлен!")
+            return redirect('orders:order_detail', order_id=order.id)
+    else:
+        initial = {}
+        if request.user.is_authenticated:
+            try:
+                profile = request.user.profile
+                initial = {
+                    'phone': profile.phone,
+                    'address': profile.address
+                }
+            except Profile.DoesNotExist:
+                pass
+        form = CheckoutForm(initial=initial)
+
+    return render(request, 'orders/checkout.html', {
+        'cart': cart,
+        'form': form
+    })
 
 
 @login_required

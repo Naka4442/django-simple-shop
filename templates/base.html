@@ -7,68 +7,159 @@
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   
-  <!-- Кастомные стили (если нужны) -->
+  <!-- Кастомные стили -->
   <style>
-    body { padding-top: 56px; }  /* Отступ для фиксированной навигации */
-    .product-card { transition: transform 0.2s; }
-    .product-card:hover { transform: scale(1.02); }
+    html, body {
+      height: 100%;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      padding-top: 56px;
+    }
+    .content-wrapper {
+      flex: 1 0 auto;
+    }
+    .footer {
+      flex-shrink: 0;
+      background-color: #212529;
+      color: white;
+    }
+    .navbar-brand { font-weight: 700; }
+    .dropdown-menu { min-width: 200px; }
+    .toast { opacity: 1 !important; }
   </style>
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
-  <!-- Навигационное меню -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <!-- Навигация -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'product_list' %}">Магазин</a>
+      <a class="navbar-brand" href="{% url 'product_list' %}">
+        <i class="bi bi-shop"></i> Магазин
+      </a>
       
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
       </button>
       
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'product_list' %}">Главная</a>
+            <a class="nav-link" href="{% url 'product_list' %}">
+              <i class="bi bi-house-door"></i> Главная
+            </a>
           </li>
         </ul>
         
-        <div class="d-flex">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <!-- Корзина -->
-          <a href="{% url 'cart:cart_detail' %}" class="btn btn-outline-light me-2">
-            Корзина 
-            {% if cart_items_count %}
-              <span class="badge bg-danger">{{ cart_items_count }}</span>
-            {% endif %}
-          </a>
+          <li class="nav-item me-2">
+            <a href="{% url 'cart:cart_detail' %}" class="btn btn-outline-light position-relative">
+              <i class="bi bi-cart"></i>
+              {% if cart_items_count > 0 %}
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ cart_items_count }}
+              </span>
+              {% endif %}
+            </a>
+          </li>
           
-          <!-- Профиль/Вход -->
-          <!-- {% if user.is_authenticated %}
+          <!-- Профиль/Авторизация -->
+          {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'users:profile' %}">
+                <i class="bi bi-person"></i> Профиль
+              </a></li>
+              <li><a class="dropdown-item" href="{% url 'orders:order_history' %}">
+                <i class="bi bi-clock-history"></i> История заказов
+              </a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}">
+                <i class="bi bi-box-arrow-right"></i> Выйти
+              </a></li>
+            </ul>
+          </li>
           {% else %}
-          {% endif %} -->
-        </div>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:login' %}">
+              <i class="bi bi-box-arrow-in-right"></i> Вход
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:register' %}">
+              <i class="bi bi-person-plus"></i> Регистрация
+            </a>
+          </li>
+          {% endif %}
+        </ul>
       </div>
     </div>
   </nav>
 
+
   <!-- Основное содержимое -->
-  <main class="container mt-4">
-    {% block content %}
-    <!-- Сюда подставляется контент из дочерних шаблонов -->
-    {% endblock %}
-  </main>
+  <div class="content-wrapper">
+    <main class="container py-4">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
 
   <!-- Футер -->
-  <footer class="py-4 bg-dark text-white mt-5">
-    <div class="container text-center">
-      &copy; 2024 Магазин
+  <footer class="footer py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h5><i class="bi bi-shop"></i> Наш магазин</h5>
+          <p class="mb-0">Лучшие товары по доступным ценам</p>
+        </div>
+        <div class="col-md-3">
+          <h5>Меню</h5>
+          <ul class="list-unstyled">
+            <li><a href="{% url 'product_list' %}" class="text-white">Главная</a></li>
+            <li><a href="#" class="text-white">О нас</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3">
+          <h5>Контакты</h5>
+          <ul class="list-unstyled">
+            <li><i class="bi bi-envelope"></i> info@example.com</li>
+            <li><i class="bi bi-telephone"></i> +7 (123) 456-78-90</li>
+          </ul>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <small>&copy; {% now "Y" %} Магазин. Все права защищены.</small>
+      </div>
     </div>
   </footer>
 
-  <!-- Bootstrap 5 JS (для работы меню) -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% if messages %}
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    {% for message in messages %}
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header bg-{{ message.tags }} text-white">
+        <strong class="me-auto">Уведомление</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        {{ message }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
   
-  <!-- Кастомные скрипты -->
-  {% block scripts %}{% endblock %}
+  <!-- Уведомления и скрипты (оставить без изменений) -->
 </body>
 </html>

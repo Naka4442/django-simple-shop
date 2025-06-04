@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-5@=ok)lz@hm!0!m9su4+m(yk39-*ohmy!r0yst_nv0549-7bb^
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+LOGIN_URL = '/users/login/'
 
 # Application definition
 
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users',
     'crispy_forms',
     'crispy_bootstrap5',
+    'widget_tweaks',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -127,7 +128,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # media
 

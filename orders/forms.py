@@ -1,20 +1,19 @@
 from django import forms
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Submit, Div
+from django.core.validators import RegexValidator
+from .models import Order
 
+class CheckoutForm(forms.ModelForm):
+    phone = forms.CharField(
+        label="Телефон",
+        validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Формат: +79991234567")],
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
 
-class OrderForm(forms.Form):
-    name = forms.CharField(label='Ваше имя', max_length=100)
-    email = forms.EmailField(label='Email')
-    address = forms.CharField(label='Адрес доставки', widget=forms.Textarea)
-    phone = forms.CharField(label='Телефон', max_length=20)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Field('name', css_class='form-control-lg'),  # Увеличенное поле
-            Field('email', placeholder='example@mail.com'),
-            Div('address', css_class='mb-4'),  # Дополнительный отступ
-            Submit('submit', 'Отправить', css_class='btn-success')
-        )
+    class Meta:
+        model = Order
+        fields = ['address', 'phone', 'payment_method', 'comment']
+        widgets = {
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'payment_method': forms.RadioSelect(attrs={'class': 'form-check-input'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+        }

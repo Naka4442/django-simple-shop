@@ -3,6 +3,22 @@
 {% block title %}Каталог товаров{% endblock %}
 
 {% block content %}
+<div class="mb-4">
+  <h4>Категории</h4>
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link {% if not selected_category %}active{% endif %}" href="{% url 'product_list' %}">Все</a>
+    </li>
+    {% for cat in categories %}
+    <li class="nav-item">
+      <a class="nav-link {% if selected_category == cat.id %}active{% endif %}" href="?category={{ cat.id }}">
+        {{ cat.name }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
 <div class="row">
   {% for product in products %}
   <div class="col-md-4 mb-4">
