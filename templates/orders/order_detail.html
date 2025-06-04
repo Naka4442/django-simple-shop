@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <h4 class="mb-0"><i class="bi bi-check-circle"></i> Заказ оформлен</h4>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-success">
+            <h4 class="alert-heading">Спасибо за ваш заказ!</h4>
+            <p>Номер вашего заказа: <strong>#{{ order.id }}</strong></p>
+            <hr>
+            <p class="mb-0">Мы свяжемся с вами в ближайшее время для подтверждения заказа.</p>
+          </div>
+          
+          <div class="card mb-3">
+            <div class="card-header">
+              <h5>Детали заказа</h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+              <p><strong>Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+              <p><strong>Способ оплаты:</strong> 
+                {% if order.payment_method == 'card' %}Картой онлайн{% else %}Наличными при получении{% endif %}
+              </p>
+              <p><strong>Адрес доставки:</strong> {{ order.address }}</p>
+              <p><strong>Телефон:</strong> {{ order.phone }}</p>
+              {% if order.comment %}
+              <p><strong>Комментарий:</strong> {{ order.comment }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <a href="{% url 'product_list' %}" class="btn btn-primary">
+            <i class="bi bi-arrow-left"></i> Вернуться в магазин
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

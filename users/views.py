@@ -32,7 +32,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, 'Вы успешно вышли из системы')
-    return redirect('products:product_list')
+    return redirect('product_list')
 
 @login_required
 def profile_view(request):
