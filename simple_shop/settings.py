@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-5@=ok)lz@hm!0!m9su4+m(yk39-*ohmy!r0yst_nv0549-7bb^
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "localhost",
     "176.119.147.136"
 ]
 LOGIN_URL = '/users/login/'
@@ -131,9 +132,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# media
+# mediaBASE_DIR = Path(__file__).resolve().parent.parent
+
 
 MEDIA_URL = '/media/'  # URL-префикс для доступа к медиафайлам
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

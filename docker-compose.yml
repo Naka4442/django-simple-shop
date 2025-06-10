@@ -5,6 +5,13 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-      - ./db.sqlite3:/db.sqlite3
+      - static_volume:/app/static  # сохраняем статику
+      - media_volume:/app/media    # сохраняем медиа
+      - db_volume:/app/db  # сохраняем базу
     environment:
       - DEBUG=1
+
+volumes:
+  static_volume:
+  media_volume:
+  db_volume:
